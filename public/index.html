@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Лабиринт - Интерактивна игра со мултиплеер поддршка">
+    <meta name="description" content="Лабиринт - Интерактивна игра с мултиплеър поддръжка">
     <meta name="theme-color" content="#667eea">
     <title>Лабиринт 🎮 - Play Now</title>
     <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🎮</text></svg>">
@@ -111,13 +111,13 @@
         <h1>🎮 Лабиринт</h1>
         
         <div class="info success">
-            <strong>✅ Сервера е активна!</strong>
-            <p>WebAssembly верзија е во развој. За сега, користи ја десктоп верзијата:</p>
+            <strong>✅ Сервърът е активен!</strong>
+            <p>WebAssembly версията е в разработка. За сега, използвай десктоп версията:</p>
         </div>
         
         <div class="info">
             <strong>🐧 Linux / macOS</strong>
-            <p>Преузми и извршиго локално:</p>
+            <p>Изтегли и изпълни локално:</p>
             <div class="code">
 git clone https://github.com/GoliamPraz/PkMn_Mz.git<br>
 cd PkMn_Mz<br>
@@ -128,7 +128,7 @@ g++ main.cpp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -o game<br>
         
         <div class="info">
             <strong>🪟 Windows</strong>
-            <p>Преузми го репозиториумот и компилирај со:</p>
+            <p>Изтегли репозиторито и компилирай с:</p>
             <div class="code">
 g++ main.cpp -lraylib -o game.exe<br>
 game.exe
@@ -136,14 +136,14 @@ game.exe
         </div>
         
         <div class="info warning">
-            <strong>ℹ️ За деплој на render.com</strong>
-            <p>WebAssembly компилирањето е комплексно за серверите. Препорука: инсталирај локално и享受!</p>
+            <strong>ℹ️ За разработване на render.com</strong>
+            <p>WebAssembly компилирането е сложно за сървъри. Препоръка: инсталирай локално и се забавлявай!</p>
         </div>
         
         <div class="links">
             <a href="https://github.com/GoliamPraz/PkMn_Mz" target="_blank">🔗 GitHub Repository</a>
             <a href="/api/stats" target="_blank">📊 API Статус</a>
-            <button onclick="checkWasm()">🔍 Проверај Статус</button>
+            <button onclick="checkWasm()">🔍 Проверяване на Статус</button>
         </div>
         
         <div id="status" style="margin-top: 20px; display: none;" class="info"></div>
@@ -158,12 +158,12 @@ game.exe
             fetch('/api/stats')
                 .then(r => r.json())
                 .then(data => {
-                    statusDiv.innerHTML = '<strong>✅ Сервера работи!</strong><br>' +
+                    statusDiv.innerHTML = '<strong>✅ Сървърът работи!</strong><br>' +
                         'Активни играчи: ' + data.activePlayers + '<br>' +
-                        'Вкупно: ' + data.totalPlayers;
+                        'Всичко: ' + data.totalPlayers;
                 })
                 .catch(e => {
-                    statusDiv.innerHTML = '<strong>❌ Грешка при поврзување</strong><br>' + e.message;
+                    statusDiv.innerHTML = '<strong>❌ Грешка при свързване</strong><br>' + e.message;
                 });
         }
     </script>
