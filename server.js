@@ -1,7 +1,11 @@
-const express = require('express');
-const WebSocket = require('ws');
-const http = require('http');
-const path = require('path');
+import express from 'express';
+import { WebSocketServer } from 'ws';
+import http from 'http';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const server = http.createServer(app);
 
 // WebSocket сървър
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocketServer({ server });
 
 // Съхранение на играчи
 let players = {};
