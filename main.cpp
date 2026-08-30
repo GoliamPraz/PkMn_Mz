@@ -10,7 +10,7 @@ const int TILE_SIZE = 30;
 const int ROWS = 20;
 const int COLS = 20;
 
-// Картата: 0 = Път, 1 = Стена, 2 = Зелен бонус
+// Map: 0 = Path, 1 = Wall, 2 = Green Bonus
 int mapGrid[ROWS][COLS] = {
     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -74,7 +74,7 @@ void SaveHighScore(int score) {
     }
 }
 
-// Поставя ново зелено бонус квадратче (2) на случайна свободна клетка
+// Spawn a new green bonus tile (2) at a random free cell
 void SpawnRandomBonus() {
     int randR, randC;
     do {
@@ -92,7 +92,7 @@ void TryMove(Player &player, int dx, int dy, float &powerUpTimer) {
     int newY = player.y + dy;
 
     if (newX >= 0 && newX < COLS && newY >= 0 && newY < ROWS) {
-        if (mapGrid[newY][newX] != 1) { // Не е стена
+        if (mapGrid[newY][newX] != 1) { // Not a wall
             player.x = newX;
             player.y = newY;
 
@@ -278,7 +278,7 @@ int main() {
             }
         }
 
-        // --- 1. УПРАВЛЕНИЕ ---
+        // --- 1. PLAYER CONTROL ---
         if (IsKeyPressed(KEY_UP)    || IsKeyPressed(KEY_W)) TryMove(player, 0, -1, powerUpTimer);
         if (IsKeyPressed(KEY_DOWN)  || IsKeyPressed(KEY_S)) TryMove(player, 0, 1, powerUpTimer);
         if (IsKeyPressed(KEY_LEFT)  || IsKeyPressed(KEY_A)) TryMove(player, -1, 0, powerUpTimer);
@@ -292,7 +292,7 @@ int main() {
             if (CheckCollisionPointRec(clickPos, btnRight)) TryMove(player, 1, 0, powerUpTimer);
         }
 
-        // --- 2. ДВИЖЕНИЕ НА ВРАГОВЕТЕ ---
+        // --- 2. ENEMY MOVEMENT ---
         enemyMoveTimer += deltaTime;
         float enemyStep = (powerUpTimer > 0.0f) ? 0.18f : 0.30f;
         if (enemyMoveTimer >= enemyStep) {
@@ -302,7 +302,7 @@ int main() {
             enemyMoveTimer = 0.0f;
         }
 
-        // --- 3. СБЛЪСЪЦИ (без да спират — просто прехвърлят точки, докато нападателят седи върху жертвата) ---
+        // --- 3. COLLISIONS (transfer health/score while on same tile) ---
         if (player.health > 0.0f) {
             for (auto &e : enemies) {
                 if (e.health <= 0.0f) {
@@ -334,11 +334,11 @@ int main() {
             }
         }
 
-        // --- 4. РИСУВАНЕ ---
+        // --- 4. RENDERING ---
         BeginDrawing();
         ClearBackground(GetColor(0x0F172AFF));
 
-        // Рисуване на картата
+        // Draw map
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
                 int posX = c * TILE_SIZE;
@@ -354,12 +354,12 @@ int main() {
             }
         }
 
-        // Играч
+        // Player
         Color playerColor = (powerUpTimer > 0) ? GOLD : RED;
         DrawCircle(player.x * TILE_SIZE + TILE_SIZE / 2, player.y * TILE_SIZE + TILE_SIZE / 2, TILE_SIZE / 2 - 4, playerColor);
         DrawText(TextFormat("%.2f", player.health), player.x * TILE_SIZE + 5, player.y * TILE_SIZE - 12, 12, WHITE);
 
-        // Врагове
+        // Enemies
         for (const auto &e : enemies) {
             Color enemyColor;
             if (IsEnemyFrozen(e)) {

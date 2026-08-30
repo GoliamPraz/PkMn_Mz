@@ -162,14 +162,14 @@ app.get('/api/status', (req, res) => {
 
 // Обслужи loading страница ако WASM не е готова
 app.get('/', (req, res) => {
-    const gameJsPath = path.join(__dirname, 'public', 'game.js');
+    const gameJsPath = path.join(__dirname, 'public', 'wasm', 'game.js');
     
     if (!fs.existsSync(gameJsPath)) {
-        // Ако game.js не съществува, покажи loading страница
-        res.sendFile(path.join(__dirname, 'public', 'loading.html'));
-    } else {
-        // Иначе покажи основния index.html
+        // If game.js doesn't exist, show landing page
         res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    } else {
+        // Otherwise show the game
+        res.sendFile(path.join(__dirname, 'public', 'game.html'));
     }
 });
 

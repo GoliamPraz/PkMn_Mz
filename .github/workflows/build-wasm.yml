@@ -1,0 +1,56 @@
+name: Build WebAssembly
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-wasm:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Emscripten
+      uses: mymindstorm/setup-emsdk@v12
+      with:
+        version: latest
+        actions-cache-folder: 'emsdk-cache'
+    
+    - name: Create build directory
+      run: mkdir -p build
+    
+    - name: Configure CMake for WebAssembly
+      run: |
+        cd build
+        emcmake cmake -DCMAKE_BUILD_TYPE=Release ..
+    
+    - name: Build WebAssembly
+      run: |
+        cd build
+        cmake --build . --config Release
+    
+    - name: Copy WASM files to public
+      run: |
+        mkdir -p public/wasm
+        cp build/game.js public/wasm/ || echo "game.js not found"
+        cp build/game.wasm public/wasm/ || echo "game.wasm not found"
+        ls -la public/wasm/
+    
+    - name: Upload WASM artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: wasm-build
+        path: public/wasm/
+        retention-days: 30
+    
+    - name: Commit WASM files (if changes)
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add public/wasm/ || true
+        git commit -m "ci: Update WebAssembly build" || echo "No changes to commit"
+        git push || echo "Nothing to push"
+      continue-on-error: true
