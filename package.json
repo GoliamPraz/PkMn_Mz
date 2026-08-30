@@ -9,6 +9,7 @@
     "dev": "node server.js",
     "build:wasm": "emcmake cmake -B build && cmake --build build",
     "build:web": "npm run build:wasm && cp build/game.* public/",
+    "postinstall": "npm run build:web || echo 'WebAssembly build skipped (Emscripten not available)'",
     "install-deps": "npm install"
   },
   "keywords": [

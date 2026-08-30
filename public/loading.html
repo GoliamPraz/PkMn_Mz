@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Лабиринт - Интерактивна WebAssembly игра с мултиплеър поддръжка">
+    <meta name="theme-color" content="#667eea">
+    <title>Лабиринт 🎮 - Play Now</title>
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🎮</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 500px;
+            color: white;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 4px solid #fbbf24;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .info {
+            margin: 20px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        .links {
+            margin-top: 30px;
+        }
+        
+        a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+        
+        a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .error {
+            background: rgba(239, 68, 68, 0.3);
+            border-left-color: #ef4444;
+        }
+        
+        .success {
+            background: rgba(74, 222, 128, 0.3);
+            border-left-color: #4ade80;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Лабиринт</h1>
+        
+        <div id="status" class="status error">
+            <div class="spinner"></div>
+            <p><strong>Зарежда игра...</strong></p>
+            <p>Първото зареждане може да отнеме 2-3 минути на безплатния Render.com план.</p>
+        </div>
+        
+        <div class="info">
+            <p>✅ Сървър е включен</p>
+            <p>⏳ WebAssembly се компилира...</p>
+            <p>📊 Проверка на статуса всеки 10 секунди</p>
+        </div>
+        
+        <div class="links">
+            <a href="/">Обновяване</a>
+            <a href="https://github.com/GoliamPraz/PkMn_Mz" target="_blank">GitHub</a>
+        </div>
+    </div>
+
+    <script>
+        // Проверка всеки 10 секунди
+        let checkCount = 0;
+        const maxChecks = 18; // 3 минути (18 * 10 сек)
+        
+        async function checkStatus() {
+            checkCount++;
+            try {
+                const response = await fetch('/game.js', { 
+                    method: 'HEAD',
+                    cache: 'no-store'
+                });
+                
+                if (response.ok) {
+                    // Игра е готова
+                    document.getElementById('status').className = 'status success';
+                    document.getElementById('status').innerHTML = `
+                        <p><strong>✅ Игра е готова!</strong></p>
+                        <p>Зареждам...</p>
+                    `;
+                    
+                    // Зареди страницата
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                    return;
+                }
+            } catch (error) {
+                console.log(`Опит ${checkCount}: Все още се компилира...`);
+            }
+            
+            // Ако не е готова, продължи да проверяваш
+            if (checkCount < maxChecks) {
+                setTimeout(checkStatus, 10000);
+            } else {
+                // Timeout
+                document.getElementById('status').className = 'status error';
+                document.getElementById('status').innerHTML = `
+                    <p><strong>⚠️ Компилирането отнема твърде дълго</strong></p>
+                    <p>Това может да е редовно на безплатния план на Render.com.</p>
+                    <p><a href="/" style="margin-top: 10px;">Опитай отново</a></p>
+                `;
+            }
+        }
+        
+        // Стартирай проверка
+        setTimeout(checkStatus, 5000);
+    </script>
+</body>
+</html>

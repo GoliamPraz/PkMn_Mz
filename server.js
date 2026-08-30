@@ -3,6 +3,7 @@ import { WebSocketServer } from 'ws';
 import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -146,6 +147,30 @@ app.get('/api/stats', (req, res) => {
         totalPlayers: Object.keys(players).length,
         activePlayers: Object.values(players).filter(p => p.connected).length
     });
+});
+
+app.get('/api/status', (req, res) => {
+    const gameJsPath = path.join(__dirname, 'public', 'game.js');
+    const wasmReady = fs.existsSync(gameJsPath);
+    
+    res.json({
+        server: 'ok',
+        wasmReady: wasmReady,
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Обслужи loading страница ако WASM не е готова
+app.get('/', (req, res) => {
+    const gameJsPath = path.join(__dirname, 'public', 'game.js');
+    
+    if (!fs.existsSync(gameJsPath)) {
+        // Ако game.js не съществува, покажи loading страница
+        res.sendFile(path.join(__dirname, 'public', 'loading.html'));
+    } else {
+        // Иначе покажи основния index.html
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    }
 });
 
 // Обслужи основния файл за всички маршрути (за SPA)
