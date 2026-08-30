@@ -1,0 +1,32 @@
+{
+  "name": "labirint-game",
+  "version": "1.0.0",
+  "description": "Maze game with WebAssembly and multiplayer support",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build:wasm": "emcmake cmake -B build && cmake --build build",
+    "build:web": "npm run build:wasm && cp build/game.* public/",
+    "install-deps": "npm install"
+  },
+  "keywords": [
+    "game",
+    "wasm",
+    "webassembly",
+    "raylib",
+    "multiplayer",
+    "maze"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

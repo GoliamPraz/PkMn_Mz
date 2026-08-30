@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: labirint-game
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+    
+    # Да пропуснеш излишни файлове при деплой
+    ignoreBuild:
+      - build/
+      - node_modules/
+      - .git/
+      - .gitignore
+      - README.md
+      - CMakeLists.txt

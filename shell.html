@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабиринт - WebAssembly Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        #canvas {
+            border: 4px solid #fff;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            background: #0f172a;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            min-width: 250px;
+            color: white;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .sidebar h2 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .info-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+        
+        .info-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .info-group input, .info-group select {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 0.95em;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+        
+        .status.connected {
+            border-left: 4px solid #4ade80;
+        }
+        
+        .status.disconnected {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .players-list {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .player-item {
+            padding: 5px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #status-text {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="canvas-container">
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Зарежда игра...</p>
+            </div>
+            <canvas id="canvas" style="display:none;"></canvas>
+        </div>
+        
+        <div class="sidebar">
+            <h2>🎮 Лабиринт</h2>
+            
+            <div class="info-group">
+                <label>Име на играч:</label>
+                <input type="text" id="playerName" placeholder="Твоето име" value="Играч">
+            </div>
+            
+            <div class="info-group">
+                <label>Режим:</label>
+                <select id="gameMode">
+                    <option value="single">Единочна игра</option>
+                    <option value="multiplayer">Мултиплеър</option>
+                </select>
+            </div>
+            
+            <button id="startBtn">Начало</button>
+            <button id="resetBtn">Рестартиране</button>
+            
+            <div id="status" class="status disconnected">
+                <strong>Статус:</strong>
+                <div id="status-text">Отключено</div>
+            </div>
+            
+            <div class="players-list" id="playersList" style="display:none;">
+                <strong>Играчи онлайн:</strong>
+                <div id="playersOnline"></div>
+            </div>
+            
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.2);">
+                <p style="font-size: 0.85em; line-height: 1.6;">
+                    <strong>Управление:</strong><br>
+                    ↑↓←→ или WASD - движение<br>
+                    Събери зелени точки<br>
+                    Избягай (или лови) враговете
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script async type="text/javascript" src="game.js"></script>
+    <script src="client.js"></script>
+</body>
+</html>
