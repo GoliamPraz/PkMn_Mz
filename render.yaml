@@ -1,28 +1,11 @@
 services:
   - type: web
     name: pkmn-mz
-    env: node
+    env: docker
     plan: free
-    buildCommand: |
-      apt-get update && apt-get install -y git cmake python3 &&
-      git clone https://github.com/emscripten-core/emsdk.git &&
-      cd emsdk && ./emsdk install latest && ./emsdk activate latest &&
-      cd .. && source ./emsdk/emsdk_env.sh &&
-      npm install &&
-      npm run build:web || echo "WASM build completed with warnings"
-    startCommand: npm start
+    dockerfile: ./Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 3000
-    
-    # Да пропуснеш излишни файлове при деплой
-    ignoreBuild:
-      - emsdk/
-      - build/
-      - node_modules/
-      - .git/
-      - .gitignore
-      - README.md
-      - CMakeLists.txt
