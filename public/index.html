@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Лабиринт - Интерактивна игра с мултиплеър поддръжка">
+    <meta name="description" content="Labyrinth - Interactive maze game with multiplayer support">
     <meta name="theme-color" content="#667eea">
-    <title>Лабиринт 🎮 - Play Now</title>
+    <title>Labyrinth 🎮 - Play Now</title>
     <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🎮</text></svg>">
     <style>
         * {
@@ -54,6 +54,40 @@
             text-align: left;
             line-height: 1.8;
             font-size: 0.95em;
+        }
+        
+        .downloads {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .download-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .download-icon {
+            font-size: 2em;
+            margin-bottom: 8px;
         }
         
         .links {
@@ -108,62 +142,95 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎮 Лабиринт</h1>
+        <h1>🎮 Labyrinth</h1>
         
         <div class="info success">
-            <strong>✅ Сервърът е активен!</strong>
-            <p>WebAssembly версията е в разработка. За сега, използвай десктоп версията:</p>
+            <strong>✅ Server is Online!</strong>
+            <p>Enjoy the Labyrinth maze game. Choose your platform below:</p>
+        </div>
+        
+        <h2 style="margin-top: 30px; font-size: 1.5em; color: white;">Download the Game</h2>
+        
+        <div class="downloads">
+            <a href="https://github.com/GoliamPraz/PkMn_Mz/archive/refs/heads/main.zip" class="download-btn">
+                <div class="download-icon">🐧</div>
+                <div>Linux</div>
+                <div style="font-size: 0.7em; margin-top: 5px;">Source Code</div>
+            </a>
+            <a href="https://github.com/GoliamPraz/PkMn_Mz/archive/refs/heads/main.zip" class="download-btn">
+                <div class="download-icon">🍎</div>
+                <div>macOS</div>
+                <div style="font-size: 0.7em; margin-top: 5px;">Source Code</div>
+            </a>
+            <a href="https://github.com/GoliamPraz/PkMn_Mz/archive/refs/heads/main.zip" class="download-btn">
+                <div class="download-icon">🪟</div>
+                <div>Windows</div>
+                <div style="font-size: 0.7em; margin-top: 5px;">Source Code</div>
+            </a>
         </div>
         
         <div class="info">
-            <strong>🐧 Linux / macOS</strong>
-            <p>Изтегли и изпълни локално:</p>
+            <strong>📖 How to Build from Source</strong>
+            
+            <h3 style="text-align: center; margin-top: 15px; color: #fff;">Linux / macOS</h3>
             <div class="code">
 git clone https://github.com/GoliamPraz/PkMn_Mz.git<br>
 cd PkMn_Mz<br>
 g++ main.cpp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -o game<br>
 ./game
             </div>
-        </div>
-        
-        <div class="info">
-            <strong>🪟 Windows</strong>
-            <p>Изтегли репозиторито и компилирай с:</p>
+            
+            <h3 style="text-align: center; margin-top: 15px; color: #fff;">Windows</h3>
             <div class="code">
+git clone https://github.com/GoliamPraz/PkMn_Mz.git<br>
+cd PkMn_Mz<br>
 g++ main.cpp -lraylib -o game.exe<br>
 game.exe
             </div>
         </div>
         
         <div class="info warning">
-            <strong>ℹ️ За разработване на render.com</strong>
-            <p>WebAssembly компилирането е сложно за сървъри. Препоръка: инсталирай локално и се забавлявай!</p>
+            <strong>ℹ️ Browser Version Coming Soon</strong>
+            <p>WebAssembly version is in development. Build locally or check back soon for browser-based play!</p>
+        </div>
+        
+        <div class="info">
+            <strong>🎮 Game Features</strong>
+            <ul style="text-align: left; margin: 10px 0; padding-left: 20px;">
+                <li>🕹️ Navigate a procedural maze</li>
+                <li>🎯 Collect green power-ups for 5 second boosts</li>
+                <li>👾 Avoid black enemies (they chase you)</li>
+                <li>🏃 Blue enemies flee from you during power-ups</li>
+                <li>❤️ Health system (1.00 - 10.00)</li>
+                <li>📊 Score tracking and high scores</li>
+                <li>⌨️ Keyboard controls: Arrow Keys or WASD</li>
+            </ul>
         </div>
         
         <div class="links">
             <a href="https://github.com/GoliamPraz/PkMn_Mz" target="_blank">🔗 GitHub Repository</a>
-            <a href="/api/stats" target="_blank">📊 API Статус</a>
-            <button onclick="checkWasm()">🔍 Проверяване на Статус</button>
+            <a href="/api/stats" target="_blank">📊 API Status</a>
+            <button onclick="checkStatus()">🔍 Check Server Status</button>
         </div>
         
         <div id="status" style="margin-top: 20px; display: none;" class="info"></div>
     </div>
 
     <script>
-        function checkWasm() {
+        function checkStatus() {
             const statusDiv = document.getElementById('status');
             statusDiv.style.display = 'block';
-            statusDiv.textContent = '⏳ Проверувам...';
+            statusDiv.textContent = '⏳ Checking...';
             
             fetch('/api/stats')
                 .then(r => r.json())
                 .then(data => {
-                    statusDiv.innerHTML = '<strong>✅ Сървърът работи!</strong><br>' +
-                        'Активни играчи: ' + data.activePlayers + '<br>' +
-                        'Всичко: ' + data.totalPlayers;
+                    statusDiv.innerHTML = '<strong>✅ Server is Running!</strong><br>' +
+                        'Active Players: ' + data.activePlayers + '<br>' +
+                        'Total Players: ' + data.totalPlayers;
                 })
                 .catch(e => {
-                    statusDiv.innerHTML = '<strong>❌ Грешка при свързване</strong><br>' + e.message;
+                    statusDiv.innerHTML = '<strong>❌ Connection Error</strong><br>' + e.message;
                 });
         }
     </script>
